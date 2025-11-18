@@ -10,6 +10,8 @@ execute:
   message: false
 ---
 
+To follow through and complete this template, you will need to refer to the [one-way ANOVA chapter](https://mbh038.github.io/r4nqy/ANOVA_one_way.html) in the r4nqy online guide to R. All the code you need is in there.
+
 ### Introduction
 
 In this exercise we will carry out a method of analysis known as ANOVA - this is what is commonly used when you have one or more categorical variables, such as species, sex and so on, and a numerical response variable such as body mass and you want to know if there is a difference in the response variable between when the levels of the factors take different values.
