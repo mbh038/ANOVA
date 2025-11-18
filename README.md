@@ -1,2 +1,2 @@
 # ANOVA
-All types of ANOVA
+One-way ANOVA exercise
