@@ -10,6 +10,10 @@ execute:
   message: false
 ---
 
+We have recorded yileds for an arable crop on thirty different plots. Plots were randomly assigned to being treated with one of three fertilizers, A, B or C. Ten plots were treated with fertilizer A, ten with B and ten with C. 
+
+Is there evidence for a difference in yield, depending on the fertilizer, and if so, which fertilizer gives the greatest yield
+
 ## Load packages
 ```{r}
 library(tidyverse)
