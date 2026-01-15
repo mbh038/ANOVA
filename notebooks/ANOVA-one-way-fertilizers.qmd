@@ -12,6 +12,8 @@ execute:
 
 This is a bare bones example of how you might write a notebook to carry our a 1-way ANOVA analysis. This analysis is appropriate when you have a difference question with one factor that has at least three levels. In our example the factor is fertilizer type, and the three levels of this are A, B and C, the three types of fertilizer that are included in the study. The data are stored in a csv file called `fertilizer.csv` which is in the `data` subfolder of this project folder.
 
+You can adapt this script to your own ends. 
+
 We have recorded yields for an arable crop on thirty different plots. Plots were randomly assigned to being treated with one of three fertilizers, A, B or C. Ten plots were treated with fertilizer A, ten with B and ten with C.
 
 Is there evidence for a difference in yield, depending on the fertilizer, and if so, which fertilizer gives the greatest yield
