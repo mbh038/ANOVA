@@ -37,6 +37,9 @@ Fill in or modify the code in each of the code chunks below. Run each chunk as y
 ```{r}
 # enter code to load the tidyverse, ggfortify and palmerpenguins packages
 # if you have never used any of these packages before, you will first need to install them - do this in the console pane
+library(tidyverse) # for data manipulation and plots, and more besides
+library(ggfortify) # this is useful for diagnostics
+library(palmerpenguins) # for the palmer penguin data
 ```
 
 The `palmerpenguins` package comes with two in-built data sets on penguins. The simplest of them is called `penguins` and is the one we will use in this exercise:

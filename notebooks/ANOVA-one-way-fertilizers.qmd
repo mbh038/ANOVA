@@ -10,21 +10,27 @@ execute:
   message: false
 ---
 
-We have recorded yileds for an arable crop on thirty different plots. Plots were randomly assigned to being treated with one of three fertilizers, A, B or C. Ten plots were treated with fertilizer A, ten with B and ten with C. 
+This is a bare bones example of how you might write a notebook to carry our a 1-way ANOVA analysis. This analysis is appropriate when you have a difference question with one factor that has at least three levels. In our example the factor is fertilizer type, and the three levels of this are A, B and C, the three types of fertilizer that are included in the study. The data are stored in a csv file called `fertilizer.csv` which is in the `data` subfolder of this project folder.
+
+We have recorded yields for an arable crop on thirty different plots. Plots were randomly assigned to being treated with one of three fertilizers, A, B or C. Ten plots were treated with fertilizer A, ten with B and ten with C.
 
 Is there evidence for a difference in yield, depending on the fertilizer, and if so, which fertilizer gives the greatest yield
 
 ## Load packages
+
 ```{r}
 library(tidyverse)
 library(here)
 library(cowplot)
+library(readxl)
 library(janitor)
 library(ggfortify)
 ```
 
 ## Load data
+
 Save it in R as a data frame called `fertilizer`
+
 ```{r}
 fertilizer <- here("data","fertilizer.csv") |>
   read_csv() |>
@@ -33,6 +39,7 @@ fertilizer <- here("data","fertilizer.csv") |>
 ```
 
 ## Summarise data
+Create a summary table that shows the mean and standard error of the plot yields for each fertilizer.
 ```{r}
 fertilizer_summary <- fertilizer |>
   group_by(fertilizer) |>
@@ -41,6 +48,7 @@ fertilizer_summary
 ```
 
 ## Plot data
+Here we use a box plot 
 ```{r}
 fertilizer |>
   ggplot(aes(x = fertilizer, y = yield)) +
@@ -52,10 +60,13 @@ fertilizer |>
 ```
 
 ## Do an ANOVA analysis
+
+First step is to create the model
 ```{r}
 fertilizer.model <- lm(yield ~ fertilizer, data = fertilizer)
 ```
 
+Second step is to check for the validity of the model. Here we do it graphically.
 ```{r}
 autoplot(fertilizer.model) + theme_cowplot()
 ```
@@ -65,18 +76,21 @@ OK?
 If so...
 
 ## Inspect the model: is there evidence of any difference between at leat one pair of fertilizers?
+
 ```{r}
 anova(fertilizer.model)
 ```
+
 ## Inspect the model: effect sizes
+
 ```{r}
 summary(fertilizer.model)
 ```
+
 ## Post-hoc test
+
 ```{r}
 TukeyHSD(aov(yield ~ fertilizer, data = fertilizer))
 ```
 
-
-So which fertilizers give significantly different yield from which others?
-Which gives the greatest yield?
+So which fertilizers give significantly different yield from which others? Which gives the greatest yield?
