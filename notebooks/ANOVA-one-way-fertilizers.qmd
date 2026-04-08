@@ -10,23 +10,28 @@ execute:
   message: false
 ---
 
-This is a bare bones example of how you might write a notebook to carry our a 1-way ANOVA analysis. This analysis is appropriate when you have a difference question with one factor that has at least three levels. In our example the factor is fertilizer type, and the three levels of this are A, B and C, the three types of fertilizer that are included in the study. The data are stored in a csv file called `fertilizer.csv` which is in the `data` subfolder of this project folder.
+This is a bare bones example of how you might write a notebook to carry out a 1-way ANOVA analysis. This analysis is appropriate when you have a difference question with one factor that has at least three levels. In our example the factor is fertilizer type, and the three levels of this are A, B and C, the three types of fertilizer that are included in the study. The data are stored in a csv file called `fertilizer.csv` which is in the `data` subfolder of this project folder.
 
 You can adapt this script to your own ends. 
 
 We have recorded yields for an arable crop on thirty different plots. Plots were randomly assigned to being treated with one of three fertilizers, A, B or C. Ten plots were treated with fertilizer A, ten with B and ten with C.
 
-Is there evidence for a difference in yield, depending on the fertilizer, and if so, which fertilizer gives the greatest yield
+Is there evidence for a difference in yield, depending on the fertilizer, and if so, which fertilizer gives the greatest yield?
+
+## Null Hypothesis
+
+Fertilizer makes no difference to yield.
 
 ## Load packages
 
 ```{r}
-library(tidyverse)
-library(here)
-library(cowplot)
-library(readxl)
-library(janitor)
-library(ggfortify)
+library(tidyverse) # indispensable workhorse.
+library(here) # to help find your data file
+library(cowplot) # nice theme for plots
+library(readxl) # to read data in from an excel file
+library(janitor) # to clean up the data
+library(ggfortify) # for diagnostic tests.
+library(emmeans) # for post-hoc tests
 ```
 
 ## Load data
@@ -42,15 +47,18 @@ fertilizer <- here("data","fertilizer.csv") |>
 
 ## Summarise data
 Create a summary table that shows the mean and standard error of the plot yields for each fertilizer.
+
 ```{r}
 fertilizer_summary <- fertilizer |>
   group_by(fertilizer) |>
-  summarise(n = n(), mean.yield = mean(yield), se.yield = sd(yield)/sqrt(n()))
+  summarise(n = n(),
+            mean.yield = mean(yield),
+            se.yield = sd(yield)/sqrt(n()))
 fertilizer_summary
 ```
 
 ## Plot data
-Here we use a box plot 
+Here we use a box plot with jittered data points overlaid on top.
 ```{r}
 fertilizer |>
   ggplot(aes(x = fertilizer, y = yield)) +
@@ -63,7 +71,8 @@ fertilizer |>
 
 ## Do an ANOVA analysis
 
-First step is to create the model
+First step is to create the model and save it as a named object.
+
 ```{r}
 fertilizer.model <- lm(yield ~ fertilizer, data = fertilizer)
 ```
@@ -82,17 +91,34 @@ If so...
 ```{r}
 anova(fertilizer.model)
 ```
+The right-hand number in this output, labelled `Pr(>F)` is the p-value of the model. If this is less than 0.05 it tells you that at the 5% significance level you can reject the null hypothesis.
+
+If there is no significance, the analysis stops here.
 
 ## Inspect the model: effect sizes
+
+
+If one of your levels is a 'control' or reference level and you want to make comparisons with that then you need to do this next part. If not, and you are just interested in pairwise differences, you can go straight to the post-hoc tests section, which come next.
+
+For example, if we had always used fertilizer A and wanted to see what difference it made to switch to either B or C then this section would be useful. 
 
 ```{r}
 summary(fertilizer.model)
 ```
 
-## Post-hoc test
+## Post-hoc tests
 
 ```{r}
-TukeyHSD(aov(yield ~ fertilizer, data = fertilizer))
+#| label: post-hoc
+library(emmeans)
+emm <- emmeans(fertilizer.model, ~ fertilizer)
+pairs(emm, adjust = "tukey")
 ```
-
 So which fertilizers give significantly different yield from which others? Which gives the greatest yield?
+
+## Report the result
+
+You should say in plain English what you found: we found that fertilizer A gave yields that were over 2kg greater than the yields with fertizers B or C (p<0.001) but that there was no discernible difference between the yields when using fertilizer B or C. 
+
+and you should say what test you used, the degrees of freedom, the test statistic and the p-value. (ANOVA, df = 2, 27, F = 13.1, p<0.001)
+
